@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dear Love 💗 🫠</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #ffe0ec, #f5d9ff, #fff0f5);
+    color: #8b174d;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+.heart {
+    position: fixed;
+    bottom: -30px;
+    animation: floatUp linear infinite;
+    pointer-events: none;
+    opacity: .65;
+    z-index: 0;
+}
+
+@keyframes floatUp {
+    to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
+
+.card {
+    position: relative;
+    z-index: 1;
+    width: min(600px, 100%);
+    background: rgba(255,255,255,.88);
+    padding: 35px 25px;
+    border-radius: 28px;
+    box-shadow: 0 15px 50px rgba(180, 50, 110, .2);
+    text-align: center;
+}
+
+h1 {
+    font-size: clamp(30px, 7vw, 45px);
+    margin: 0 0 12px;
+}
+
+h2 {
+    font-size: clamp(22px, 5vw, 30px);
+    line-height: 1.4;
+}
+
+.message {
+    font-size: 18px;
+    line-height: 1.8;
+    white-space: pre-line;
+    margin: 24px 0;
+}
+
+button {
+    border: none;
+    border-radius: 30px;
+    padding: 13px 26px;
+    margin: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .2s, background .2s;
+}
+
+button:hover { transform: scale(1.05); }
+
+.yes, .next {
+    background: #ff4f91;
+    color: white;
+}
+
+.no {
+    background: #eee;
+    color: #555;
+}
+
+.buttons {
+    position: relative;
+    min-height: 70px;
+    margin-top: 20px;
+}
+
+#noBtn {
+    position: relative;
+}
+
+.hidden { display: none !important; }
+
+select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #ff9ec5;
+    border-radius: 14px;
+    background: #fff7fb;
+    color: #8b174d;
+    font-size: 16px;
+    margin: 20px 0;
+}
+
+.small { font-size: 13px; color: #a35a7a; }
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>Dear Love 💗 🫠</h1>
+    <div id="content"></div>
+</div>
+
+<script>
+const content = document.getElementById("content");
+
+let stage = 0;
+let noMoves = 0;
+
+function show(html) {
+    content.innerHTML = html;
+}
+
+function question(title, yesText = "Yes 💗", noText = "No 🙈") {
+    show(`
+        <h2>${title}</h2>
+        <div class="buttons">
+            <button class="yes" id="yesBtn">${yesText}</button>
+            <button class="no" id="noBtn">${noText}</button>
+        </div>
+    `);
+
+    document.getElementById("yesBtn").onclick = yesAction;
+
+    const noBtn = document.getElementById("noBtn");
+    noBtn.onclick = () => {
+        noMoves++;
+
+        if (stage === 5) {
+            // The No button disappears for this question.
+            noBtn.remove();
+            return;
+        }
+
+        // Move the No button to a new position.
+        noBtn.style.position = "absolute";
+        noBtn.style.left = Math.random() * 65 + "%";
+        noBtn.style.top = Math.random() * 25 + "px";
+        noBtn.style.transform =
+            `rotate(${Math.random() * 24 - 12}deg)`;
+    };
+}
+
+function nextButton(action, label = "Next Question 💌") {
+    const btn = document.createElement("button");
+    btn.className = "next";
+    btn.textContent = label;
+    btn.onclick = action;
+    content.appendChild(btn);
+}
+
+function message(text, nextAction, label = "Next Question 💌") {
+    show(`<div class="message">${text}</div>`);
+    if (nextAction) nextButton(nextAction, label);
+}
+
+function yesAction() {
+    if (stage === 0) {
+        stage = 1;
+        question("Will you marry me? 💍🥹");
+    } else if (stage === 1) {
+        stage = 2;
+        message(
+            `I am sorry for everything that I did. I understand, my love, sometimes things are not in my hand and I am not able to give you time, but trust me, each and every time I only think about loving you. Leaving you is not my choice. I want us to stay together always. Maybe we have a future or don't, I still don't care; I just need my entire life to be with you. I love you soo much and I am sorry in case anything made you sad. 😭❤️🫂`,
+            () => {
+                stage = 3;
+                question("Are you happy with me? 🥺💗");
+            }
+        );
+    } else if (stage === 3) {
+        stage = 4;
+        message(
+            "Awwww my baby, I knew it! 🥹💗 I love you and miss you so muchhh! ❤️😘🫂",
+            () => {
+                stage = 5;
+                show(`
+                    <h2>Choose your question, my love 💌</h2>
+                    <select id="questionSelect">
+                        <option value="love">I know you love someone else, is it true? 😭💔</option>
+                    </select>
+                    <button class="next" id="askBtn">Continue 💗</button>
+                `);
+                document.getElementById("askBtn").onclick = () => {
+                    stage = 5;
+                    question("I know you love someone else, is it true? 😭💔");
+                };
+            }
+        );
+    } else if (stage === 5) {
+        stage = 6;
+        message(
+            "😭😭 Who is that person whom you love? I gave you everything and I loved you so much. Still, for your happiness, it's better for me to leave you. 💔🥺",
+            () => {
+                stage = 7;
+                question("Can you leave him and stay loyal with me from now on? 🥹❤️");
+            }
+        );
+    } else if (stage === 7) {
+        stage = 8;
+        message(
+            "Okay, my love! 🥹💗 I imagined having many kids with you, so please do not leave me at any point because I cannot imagine my life without you. I love you soooo muchhh! Love you and I miss you! ❤️🫂😘👶",
+            () => {
+                show(`
+                    <h2>I love you forever! 💗</h2>
+                    <div class="message">You are so special to me. ❤️🥹🫂</div>
+                    <button class="yes" id="endBtn">End 💗</button>
+                `);
+                document.getElementById("endBtn").onclick = closePage;
+            },
+            "Finish 💗"
+        );
+    }
+}
+
+function closePage() {
+    window.close();
+
+    // Browsers usually block scripts from closing tabs
+    // that were not opened by the script.
+    setTimeout(() => {
+        show(`
+            <h2>Thank you for reading, my love 💗</h2>
+            <p class="message">You can close this tab now. 🫶</p>
+        `);
+    }, 300);
+}
+
+// Floating hearts in the background.
+for (let i = 0; i < 18; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.textContent = ["💗", "💕", "💖", "❤️"][i % 4];
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (14 + Math.random() * 22) + "px";
+    heart.style.animationDuration = (7 + Math.random() * 10) + "s";
+    heart.style.animationDelay = (Math.random() * 10) + "s";
+    document.body.appendChild(heart);
+}
+
+// Start with the first question.
+stage = 0;
+question("Do you love me? 🥺💗");
+</script>
+
+</body>
+</html>
